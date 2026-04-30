@@ -8,7 +8,13 @@ const Navbar = () => {
       <div className="wrapper navbar-height py-4 flex justify-between items-center">
         <Link className='flex gap-0.5 items-center' href='/'>
            <Image src='/assets/logo.png' alt='bookilied' width={46} height={26} />
+           <span className='logo-text'>
+            Bookilied
+           </span>
         </Link>
+        <nav className='w-fit flex gap-7 items-center'>
+
+        </nav>
       </div>
     </div>
   )
