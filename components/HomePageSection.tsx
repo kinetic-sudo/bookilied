@@ -10,8 +10,8 @@ const steps = [
 
 const HomePageSection = () => {
   return (
-    <main className='container'>
-    <section className='wrapper'>
+    <>
+    <section className='wrapper pt-28 mb-10 md:mb-16'>
       <div className='library-hero-card'>
         <div className='library-hero-content  lg:items-center'>
           <div className='library-hero-text'>
@@ -66,7 +66,7 @@ const HomePageSection = () => {
     <div className='library-hero-grid'>
 
     </div>
-  </main>
+    </>
   )
 }
 
