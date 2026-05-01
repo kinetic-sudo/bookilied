@@ -8,7 +8,8 @@ const Page = () => {
       <HomePageSection />
       <div className="library-hero-grid">
         {sampleBooks.map((book) => (
-          <BookCard />
+          <BookCard key={book._id} title={book.title} author={book.author} coverUrl={book.coverURL}
+           slug={book.slug}/>
         ))}
       </div>
     </main>

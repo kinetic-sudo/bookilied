@@ -176,7 +176,12 @@
     @apply max-w-7xl px-2 mx-auto w-full;
   }
   .container {
-    @apply pt-[94px] pb-18 min-h-screen md:max-w-100;
+    @apply pt-[94px] pb-18 min-h-[60vh] ;
+  }
+  @media (min-width: 80rem) {
+    .container {
+      max-width: 100rem;
+    }
   }
   .navItem {
     @apply px-1 sm:px-3 text-sm sm:text-base font-medium flex items-center cursor-pointer text-[var(--text-primary)];

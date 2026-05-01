@@ -10,7 +10,7 @@ const steps = [
 
 const HomePageSection = () => {
   return (
-    <main className='container'>
+    <main className='container w-full'>
     <section className='wrapper'>
       <div className='library-hero-card'>
         <div className='library-hero-content  lg:items-center'>
