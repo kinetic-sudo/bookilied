@@ -1,6 +1,6 @@
 'use client'
 
-import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
+import { Show, SignInButton, SignUpButton, UserButton, useUser } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -14,6 +14,7 @@ const navItem = [
 
 const Navbar = () => {
   const pathName = usePathname()
+  const { user } = useUser()
 
   return (
     <div className="w-full fixed z-50 bg-('--bg-primary') text-('--text-primary')">
@@ -34,13 +35,22 @@ const Navbar = () => {
               </Link>
             )
           })}
+          <div className='flex gap-7.5 items-center'>
           <Show when='signed-out'>
             <SignInButton mode='modal'/>
             <SignUpButton mode='modal'/>
           </Show>
           <Show when='signed-in'>
+            <div className='nav-user-link'>
             <UserButton />
+            {user?.firstName && (
+              <Link href='/subscriptions' className='nav-user-name'>
+                {user.firstName}
+              </Link>
+            )}
+            </div>
           </Show>
+          </div>
         </nav>
       </div>
     </div>
