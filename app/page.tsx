@@ -1,15 +1,16 @@
-import React from 'react'
-import { auth } from '@clerk/nextjs/server'
+import HomePageSection from '@/components/HomePageSection'
+import Image from 'next/image'
+import Link from 'next/link'
 
-const page = async () => {
-  const { userId } = await auth()
 
+
+
+const Page = () => {
   return (
-    <div>
-      {/* {userId ? <p>Signed in</p> : <p>Signed out</p>} */}
-      {/* <h1 className='text-2xl underline'>Bookilied</h1> */}
-    </div>
+    <HomePageSection />
+
+
   )
 }
 
-export default page
+export default Page
