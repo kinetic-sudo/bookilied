@@ -1,5 +1,6 @@
 'use client'
 
+import { Show, SignInButton, SignUpButton, UserButton } from '@clerk/nextjs'
 import { cn } from '@/lib/utils'
 import Image from 'next/image'
 import Link from 'next/link'
@@ -33,6 +34,13 @@ const Navbar = () => {
               </Link>
             )
           })}
+          <Show when='signed-out'>
+            <SignInButton mode='modal'/>
+            <SignUpButton mode='modal'/>
+          </Show>
+          <Show when='signed-in'>
+            <UserButton />
+          </Show>
         </nav>
       </div>
     </div>
