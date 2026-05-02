@@ -1,15 +1,20 @@
-import React from 'react'
-import { auth } from '@clerk/nextjs/server'
+import BookCard from '@/components/BookCard'
+import HomePageSection from '@/components/HomePageSection'
+import { sampleBooks } from '@/lib/constant'
 
-const page = async () => {
-  const { userId } = await auth()
-
+const Page = () => {
   return (
-    <div>
-      {/* {userId ? <p>Signed in</p> : <p>Signed out</p>} */}
-      {/* <h1 className='text-2xl underline'>Bookilied</h1> */}
-    </div>
+    <main className='wrapper'>
+      <HomePageSection />
+      <div className="library-books-grid mb-10">
+        {sampleBooks.map((book) => (
+          <BookCard key={book._id} title={book.title} author={book.author} coverURL={book.coverURL}
+           slug={book.slug}/>
+        ))}
+      </div>
+    </main>
+
   )
 }
 
-export default page
+export default Page
