@@ -8,7 +8,7 @@ import { usePathname } from 'next/navigation'
 import React from 'react'
 
 const navItem = [
-  {label: 'Liabrary', href: '/'},
+  {label: 'Library', href: '/'},
   {label: 'Add new', href: '/books/new'}
 ]
 
@@ -17,8 +17,8 @@ const Navbar = () => {
   const { user } = useUser()
 
   return (
-    <div className="w-full fixed z-50 bg-('--bg-primary') text-('--text-primary')">
-      <div className="wrapper navbar-height py-4 flex justify-between items-center">
+    <div className="w-full fixed z-50 bg-[var(--bg-primary)] text-[var(--text-primary)]">
+      <div className="wrapper mt-3 navbar-height py-4 flex justify-between items-center border-2 border-[var(--text-primary)] rounded-full bg-[var(--accent-light)]">
         <Link className='flex gap-0.5 items-center' href='/'>
            <Image src='/assets/logo.png' alt='bookilied' width={46} height={26} />
            <span className='logo-text'>

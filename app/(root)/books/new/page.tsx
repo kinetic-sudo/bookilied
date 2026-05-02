@@ -1,5 +1,5 @@
-import UploadForm from '@/components/UploadForm'
 import React from 'react'
+import UploadFormClient from './UploadFormClient'
 
 const page = () => {
   return (
@@ -9,7 +9,7 @@ const page = () => {
                 <h1 className='page-title-xl'>Add a new book</h1>
                 <p className='subtitle'>Upload a PDF to generate your interactive interview</p>
             </section>
-            <UploadForm />
+            <UploadFormClient />
         </div>
     </main>
   )
