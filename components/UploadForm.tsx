@@ -79,9 +79,14 @@ const femaleVoices: {
 ];
 
 const UploadForm = () => {
+  const [mounted, setMounted] = React.useState(false);
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
   const coverInputRef = React.useRef<HTMLInputElement>(null);
   const voiceGroupLabelId = React.useId();
+
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const form = useForm<UploadFormInput, unknown, UploadFormOutput>({
     resolver: zodResolver(UploadSchema),
@@ -104,6 +109,12 @@ const UploadForm = () => {
       coverName: data.coverImage?.name,
     });
   };
+
+  if (!mounted) {
+    return (
+      <div className="new-book-wrapper" suppressHydrationWarning />
+    );
+  }
 
   return (
     <div className="new-book-wrapper">
