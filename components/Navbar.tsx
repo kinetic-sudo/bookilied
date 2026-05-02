@@ -18,7 +18,7 @@ const Navbar = () => {
 
   return (
     <div className="w-full fixed z-50 bg-('--bg-primary') text-('--text-primary')">
-      <div className="wrapper navbar-height py-4 flex justify-between items-center">
+      <div className="wrapper mt-3  navbar-height py-4 flex justify-between items-center border-2 border-black rounded-full bg-[#F3E4C7]">
         <Link className='flex gap-0.5 items-center' href='/'>
            <Image src='/assets/logo.png' alt='bookilied' width={46} height={26} />
            <span className='logo-text'>
