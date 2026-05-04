@@ -53,6 +53,7 @@ export interface IVoiceSession extends Document {
 // FORM & INPUT TYPES
 // ============================================
 
+export type BookUploadFormInputValues = z.input<typeof UploadSchema>;
 export type BookUploadFormValues = z.infer<typeof UploadSchema>;
 
 export interface CreateBook {

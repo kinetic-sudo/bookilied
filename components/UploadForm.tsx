@@ -4,7 +4,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { ImageIcon, Upload, X } from 'lucide-react';
 import * as React from 'react';
 import { useForm } from 'react-hook-form';
-import type { z } from 'zod';
+import {useAuth} from '@clerk/nextjs'
 
 import LoadingOverlay from '@/components/LoadingOverlay';
 import {
@@ -16,11 +16,10 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import type { BookUploadFormInputValues, BookUploadFormValues } from '@/types';
 import { UploadSchema, type UploadVoiceId } from '@/lib/zod';
 import { cn } from '@/lib/utils';
-
-type UploadFormInput = z.input<typeof UploadSchema>;
-type UploadFormOutput = z.infer<typeof UploadSchema>;
+import { toast } from 'sonner'
 
 function mergeRefs<T>(
   ...refs: (React.Ref<T> | undefined)[]
@@ -81,9 +80,11 @@ const femaleVoices: {
 const UploadForm = () => {
   const pdfInputRef = React.useRef<HTMLInputElement>(null);
   const coverInputRef = React.useRef<HTMLInputElement>(null);
+  const {userId} = useAuth()
+  const [isSubmitting, SetisSubmitting] = React.useState(false)
   const voiceGroupLabelId = React.useId();
 
-  const form = useForm<UploadFormInput, unknown, UploadFormOutput>({
+  const form = useForm<BookUploadFormInputValues, unknown, BookUploadFormValues>({
     resolver: zodResolver(UploadSchema),
     defaultValues: {
       pdfFile: undefined,
@@ -94,8 +95,18 @@ const UploadForm = () => {
     },
   });
 
-  const onSubmit = async (data: UploadFormOutput) => {
+  const onSubmit = async (data: BookUploadFormValues) => {
+
+    if(!userId) {
+      return toast.error('please login to upload book')
+    }
+
+    SetisSubmitting(true);
+
+    //posthog to track the book upload
+
     await new Promise((r) => setTimeout(r, 1400));
+    SetisSubmitting(false)
     console.log('book upload', {
       title: data.title,
       author: data.author,
