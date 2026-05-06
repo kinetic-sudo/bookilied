@@ -20,7 +20,7 @@ import type { BookUploadFormInputValues, BookUploadFormValues } from '@/types';
 import { UploadSchema, type UploadVoiceId } from '@/lib/zod';
 import { cn, parsePDFFile } from '@/lib/utils';
 import { toast } from 'sonner'
-import { checkBookExist } from '@/lib/actions/book.actions';
+import { checkBookExist, createBook } from '@/lib/actions/book.actions';
 import { useRouter } from 'next/navigation';
 import { upload } from '@vercel/blob/client';
 
@@ -91,11 +91,11 @@ const UploadForm = () => {
   const form = useForm<BookUploadFormInputValues, unknown, BookUploadFormValues>({
     resolver: zodResolver(UploadSchema),
     defaultValues: {
-      pdfFile: undefined,
-      coverImage: undefined,
       title: '',
       author: '',
-      voice: 'rachel',
+      persona: '',
+      pdfFile: undefined,
+      coverImage: undefined,
     },
   });
 
@@ -157,6 +157,16 @@ const UploadForm = () => {
         coverUrl = uploadedCoverBlob.url
       }
 
+      const book = await createBook({
+        clerkId: userId,
+        title: data.title,
+        author: data.author,
+        persona: data.persona,
+        fileURL: uploadedPDFBlob.url,
+        fileBlobKey: uploadedPDFBlob.pathname,
+        coverURL: coverUrl,
+        fileSize: pdfFile.size
+      })
     } catch (error) {
       console.error(error)
     } finally {
@@ -168,7 +178,7 @@ const UploadForm = () => {
     console.log('book upload', {
       title: data.title,
       author: data.author,
-      voice: data.voice,
+      voice: data.persona,
       pdfName: data.pdfFile.name,
       coverName: data.coverImage?.name,
     });
@@ -392,7 +402,7 @@ const UploadForm = () => {
 
           <FormField
             control={form.control}
-            name="voice"
+            name="persona"
             render={({ field }) => (
               <FormItem className="space-y-6">
                 <p id={voiceGroupLabelId} className="form-label">
