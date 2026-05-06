@@ -114,7 +114,7 @@ const UploadForm = () => {
       if(existCheck.exist && existCheck.book) {
          toast.info('Book with same title already exist. Please try again with different title')
          form.reset()
-         router.push(`books/${existCheck.book.slug}`)
+         router.push(`/books/${existCheck.book.slug}`)
          return;
       }
       const fileTitle = data.title.replace(/\s+/g, '-').toLowerCase();
@@ -136,8 +136,8 @@ const UploadForm = () => {
       let coverUrl: string
 
       if (data.coverImage instanceof File) {
-        const coverFile = data.coverImage[0];
-        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, data.coverImage, {
+        const coverFile = data.coverImage;
+        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, coverFile,  {
           access: 'public',
           handleUploadUrl: '/api/upload',
           contentType: coverFile.type
