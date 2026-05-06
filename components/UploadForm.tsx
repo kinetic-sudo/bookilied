@@ -18,8 +18,11 @@ import {
 import { Input } from '@/components/ui/input';
 import type { BookUploadFormInputValues, BookUploadFormValues } from '@/types';
 import { UploadSchema, type UploadVoiceId } from '@/lib/zod';
-import { cn } from '@/lib/utils';
+import { cn, parsePDFFile } from '@/lib/utils';
 import { toast } from 'sonner'
+import { checkBookExist } from '@/lib/actions/book.actions';
+import { useRouter } from 'next/navigation';
+import { upload } from '@vercel/blob/client';
 
 function mergeRefs<T>(
   ...refs: (React.Ref<T> | undefined)[]
@@ -83,6 +86,7 @@ const UploadForm = () => {
   const {userId} = useAuth()
   const [isSubmitting, SetisSubmitting] = React.useState(false)
   const voiceGroupLabelId = React.useId();
+  const router = useRouter()
 
   const form = useForm<BookUploadFormInputValues, unknown, BookUploadFormValues>({
     resolver: zodResolver(UploadSchema),
@@ -104,6 +108,60 @@ const UploadForm = () => {
     SetisSubmitting(true);
 
     //posthog to track the book upload
+
+    try {
+      const existCheck = await checkBookExist(data.title)
+      if(existCheck.exist && existCheck.book) {
+         toast.info('Book with same title already exist. Please try again with different title')
+         form.reset()
+         router.push(`books/${existCheck.book.slug}`)
+         return;
+      }
+      const fileTitle = data.title.replace(/\s+/g, '-').toLowerCase();
+      const pdfFile = data.pdfFile
+
+      const parsedPDF = await parsePDFFile(pdfFile);
+
+      if(parsedPDF.content.length === 0) {
+        toast.error('Failed to parse PDF.Please try again with different file')
+        return;
+      } 
+
+      const uploadedPDFBlob = await upload(fileTitle, pdfFile, {
+        access: 'public',
+        handleUploadUrl: '/api/upload',
+        contentType: 'application/pdf'
+      });
+
+      let coverUrl: string
+
+      if (data.coverImage instanceof File) {
+        const coverFile = data.coverImage[0];
+        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, data.coverImage, {
+          access: 'public',
+          handleUploadUrl: '/api/upload',
+          contentType: coverFile.type
+        });
+
+        coverUrl = uploadedCoverBlob.url
+      } else {
+        const response = await fetch(parsedPDF.cover)
+        const blob = await response.blob()
+
+        const uploadedCoverBlob = await upload(`${fileTitle}_cover.png`, blob, {
+          access: 'public',
+          handleUploadUrl: '/api/upload',
+          contentType: 'image/png'
+        });
+
+        coverUrl = uploadedCoverBlob.url
+      }
+
+    } catch (error) {
+      console.error(error)
+    } finally {
+      SetisSubmitting(false)
+    }
 
     await new Promise((r) => setTimeout(r, 1400));
     SetisSubmitting(false)

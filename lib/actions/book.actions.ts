@@ -16,8 +16,12 @@ export const checkBookExist = async (title: string) => {
         if(existingBook) {
             return {
                 exist: true,
-                data: serializeData(existingBook)
+                book: serializeData(existingBook)
             }
+        }
+
+        return {
+            exist: false
         }
     } catch (e) {
         console.error('Error checking book exist');
