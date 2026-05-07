@@ -20,7 +20,7 @@ import type { BookUploadFormInputValues, BookUploadFormValues } from '@/types';
 import { UploadSchema, type UploadVoiceId } from '@/lib/zod';
 import { cn, parsePDFFile } from '@/lib/utils';
 import { toast } from 'sonner'
-import { checkBookExist, createBook } from '@/lib/actions/book.actions';
+import { checkBookExist, createBook, saveBookSegments } from '@/lib/actions/book.actions';
 import { useRouter } from 'next/navigation';
 import { upload } from '@vercel/blob/client';
 
@@ -166,9 +166,25 @@ const UploadForm = () => {
         fileBlobKey: uploadedPDFBlob.pathname,
         coverURL: coverUrl,
         fileSize: pdfFile.size
-      })
+      });
+
+      if(!book.success) throw new Error('Failed to create book')
+        if(book.alreadyExists) {
+          toast.info('Book with same title already exist. Please try again with different title')
+          form.reset()
+          router.push(`/books/${existCheck.book.slug}`)
+          return;
+       }
+
+       const segments = await saveBookSegments(book.data._id, userId, parsedPDF.content)
+
+       if(!segments) {
+        toast.error('Failed to save a book segments')
+        throw new Error('Failed to save a book segments')
+       }
     } catch (error) {
       console.error(error)
+      toast.error('Failed to upload book. Please try again later')
     } finally {
       SetisSubmitting(false)
     }
