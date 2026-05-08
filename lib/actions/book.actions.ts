@@ -1,33 +1,30 @@
 'use server'
 
 import { CreateBook, TextSegment } from "@/types";
-import { success } from "zod";
 import { connectToDatabase } from "@/database/mongoose";
-import { generateSlug, serializeData,  } from "../utils";
+import { generateSlug, serializeData } from "../utils";
 import Book from "@/database/models/books.models";
 import BookSegment from "@/database/models/bookSegments.models";
 
 export const checkBookExist = async (title: string) => {
-    try{
+    try {
         await connectToDatabase()
         const slug = generateSlug(title)
-        const existingBook = await Book.findOne({slug}).lean()
+        const existingBook = await Book.findOne({ slug }).lean()
 
-        if(existingBook) {
+        if (existingBook) {
             return {
                 exist: true,
                 book: serializeData(existingBook)
             }
         }
 
-        return {
-            exist: false
-        }
+        return { exist: false }
     } catch (e) {
-        console.error('Error checking book exist');
+        console.error('Error checking book exist', e);
         return {
             exist: false,
-            error: e
+            error: e instanceof Error ? e.message : 'Unknown error'  // ✅ plain string
         }
     }
 }
@@ -36,9 +33,9 @@ export const createBook = async (data: CreateBook) => {
     try {
         await connectToDatabase();
         const slug = generateSlug(data.title)
-        const existingBook = await Book.findOne({slug}).lean();
+        const existingBook = await Book.findOne({ slug }).lean();
 
-        if(existingBook) {
+        if (existingBook) {
             return {
                 success: false,
                 data: serializeData(existingBook),
@@ -46,20 +43,17 @@ export const createBook = async (data: CreateBook) => {
             }
         }
 
-        // TODO: check if subscription limit before creating a book
+        const book = await Book.create({ ...data, slug, totalSegments: 0 });
 
-        const book = await Book.create({
-            ...data, slug, totalSegments: 0,
-        });
-        return({
+        return {
             success: true,
             data: serializeData(book),
-        })
+        }
     } catch (e) {
         console.error('error creating book', e);
         return {
-            success:false,
-            error: e,
+            success: false,
+            error: e instanceof Error ? e.message : 'Unknown error'  // ✅ plain string
         }
     }
 }
@@ -67,31 +61,27 @@ export const createBook = async (data: CreateBook) => {
 export const saveBookSegments = async (bookId: string, segments: TextSegment[], clerkId: string) => {
     try {
         await connectToDatabase();
-        console.log('saving book segments...');
 
-        const segmentToInsert = segments.map(({segmentIndex, text, pageNumber, wordCount}) => ({
+        const segmentToInsert = segments.map(({ segmentIndex, text, pageNumber, wordCount }) => ({
             clerkId, bookId, content: text, segmentIndex, pageNumber, wordCount
         }));
 
         await BookSegment.insertMany(segmentToInsert)
-
-        await Book.findByIdAndUpdate(bookId, {totalSegments: segments.length})
-
-        console.log('book segments saved sucessfully');
+        await Book.findByIdAndUpdate(bookId, { totalSegments: segments.length })
 
         return {
             success: true,
-            data: { segmetsCreated: segments.length }
+            data: { segmentsCreated: segments.length }
         }
     } catch (e) {
         console.error('error saving book segments', e);
 
-        await BookSegment.deleteMany({bookId});
+        await BookSegment.deleteMany({ bookId });
         await Book.findByIdAndDelete(bookId);
-        console.log('deleted book and segments due to failure in saving segments');
+
         return {
             success: false,
-            error: e
+            error: e instanceof Error ? e.message : 'Unknown error'  // ✅ plain string
         }
     }
-}  
+}

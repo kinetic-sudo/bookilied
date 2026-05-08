@@ -172,16 +172,20 @@ const UploadForm = () => {
         if(book.alreadyExists) {
           toast.info('Book with same title already exist. Please try again with different title')
           form.reset()
-          router.push(`/books/${existCheck.book.slug}`)
+          router.push(`/`)
           return;
        }
 
        const segments = await saveBookSegments(book.data._id, userId, parsedPDF.content)
 
-       if(!segments) {
+       if(!segments.success) {
         toast.error('Failed to save a book segments')
         throw new Error('Failed to save a book segments')
        }
+
+       form.reset()
+       router.push(`/books/${book.data.slug}`)
+
     } catch (error) {
       console.error(error)
       toast.error('Failed to upload book. Please try again later')
