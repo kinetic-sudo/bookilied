@@ -176,7 +176,7 @@ const UploadForm = () => {
           return;
        }
 
-       const segments = await saveBookSegments(book.data._id, userId, parsedPDF.content)
+       const segments = await saveBookSegments(book.data._id, parsedPDF.content,  userId,)
 
        if(!segments.success) {
         toast.error('Failed to save a book segments')
