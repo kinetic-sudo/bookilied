@@ -50,10 +50,16 @@ export const createBook = async (data: CreateBook) => {
             data: serializeData(book),
         }
     } catch (e) {
-        console.error('error creating book', e);
+        // Surface the real Mongoose error
+        const isDuplicateKey = (e as any)?.code === 11000
+        const message = isDuplicateKey
+            ? `A book with this slug already exists`
+            : e instanceof Error ? e.message : 'Unknown error'
+
+        console.error('error creating book:', message, e)
         return {
             success: false,
-            error: e instanceof Error ? e.message : 'Unknown error'  // ✅ plain string
+            error: message
         }
     }
 }

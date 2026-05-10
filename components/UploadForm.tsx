@@ -168,7 +168,10 @@ const UploadForm = () => {
         fileSize: pdfFile.size
       });
 
-      if(!book.success) throw new Error('Failed to create book')
+      if(!book.success) {
+        console.error('createBook failed with:', book.error)  // add this
+        throw new Error('Failed to create book')
+      }
         if(book.alreadyExists) {
           toast.info('Book with same title already exist. Please try again with different title')
           form.reset()
