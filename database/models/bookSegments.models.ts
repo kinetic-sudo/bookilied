@@ -16,7 +16,7 @@ const BookSegmentSchema = new Schema<IBookSegment>(
 // clean code -> atomic functions -> segments -> dive deeper 
 
 BookSegmentSchema.index({ bookId: 1, segmentIndex: 1 }, { unique: true });
-BookSegmentSchema.index({ bookId: 1, pageNumber: 1 }, { unique: true });
+BookSegmentSchema.index({ bookId: 1, pageNumber: 1 });
 BookSegmentSchema.index({ clerkId: 1, content: 'text' });
 
 const BookSegment =
