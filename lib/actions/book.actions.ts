@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/database/mongoose";
 import { generateSlug, serializeData } from "../utils";
 import Book from "@/database/models/books.models";
 import BookSegment from "@/database/models/bookSegments.models";
+import { Types } from "mongoose";
 
 export const checkBookExist = async (title: string) => {
     try {
@@ -68,8 +69,10 @@ export const saveBookSegments = async (bookId: string, segments: TextSegment[], 
     try {
         await connectToDatabase();
 
+        const bookObjectId = new Types.ObjectId(bookId)
+
         const segmentToInsert = segments.map(({ segmentIndex, text, pageNumber, wordCount }) => ({
-            clerkId, bookId, content: text, segmentIndex, pageNumber, wordCount
+            clerkId, bookId: bookObjectId, content: text, segmentIndex, pageNumber, wordCount
         }));
 
         await BookSegment.insertMany(segmentToInsert)
