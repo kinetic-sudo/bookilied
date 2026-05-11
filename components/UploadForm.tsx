@@ -187,7 +187,7 @@ const UploadForm = () => {
        }
 
        form.reset()
-       router.push(`/books/${book.data.slug}`)
+       router.push('/')
 
     } catch (error) {
       console.error(error)
