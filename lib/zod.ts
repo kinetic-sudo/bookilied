@@ -31,7 +31,9 @@ export const UploadSchema = z.object({
     .optional(),
   title: z.string().min(1, 'Title is required').max(200),
   author: z.string().min(1, 'Author name is required').max(200),
-  voice: uploadVoiceSchema,
+  persona: z
+    .string()
+    .min(1, 'please select a voice'),
 });
 
 export { uploadVoiceSchema };
