@@ -7,6 +7,24 @@ import Book from "@/database/models/books.models";
 import BookSegment from "@/database/models/bookSegments.models";
 import { Types } from "mongoose";
 
+export const getAllBooks = async () => {
+    try {
+        await connectToDatabase()
+        const books =  await Book.find().sort({ createdAt: -1 }).lean()
+
+        return {
+            success: true,
+            data: serializeData(books)
+        }
+    } catch (e) {
+        console.error('Error connecting to database', e);
+        return {
+            success: false,
+            error: e
+        }
+    }
+}
+
 export const checkBookExist = async (title: string) => {
     try {
         await connectToDatabase()
