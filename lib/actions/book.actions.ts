@@ -112,3 +112,36 @@ export const saveBookSegments = async (bookId: string, segments: TextSegment[], 
         }
     }
 }
+
+export const getBookBySlug = async (slug: string) => {
+    try {
+        await connectToDatabase();
+        const book = await Book.findOne({ slug }).lean();
+ 
+        if (!book) {
+            return { success: false, data: null };
+        }
+ 
+        return {
+            success: true,
+            data: serializeData(book) as {
+                _id: string;
+                title: string;
+                author: string;
+                coverURL: string;
+                persona: string;
+                slug: string;
+                fileURL: string;
+                totalSegments: number;
+            }
+        };
+    } catch (e) {
+        console.error('Error fetching book by slug', e);
+        return {
+            success: false,
+            data: null,
+            error: e instanceof Error ? e.message : 'Unknown error'
+        };
+    }
+};
+ 
