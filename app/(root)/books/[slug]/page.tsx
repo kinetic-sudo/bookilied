@@ -51,6 +51,8 @@ export default async function BookPage({ params }: BookPageProps) {
                 type="button"
                 className="vapi-mic-btn vapi-mic-btn-inactive"
                 aria-label="Start conversation"
+                disabled
+                aria-disabled="true"
               >
                 <MicOff className="w-6 h-6 text-[var(--text-primary)]" />
               </button>

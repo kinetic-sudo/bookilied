@@ -136,7 +136,14 @@ export const getBookBySlug = async (slug: string) => {
             }
         };
     } catch (e) {
-        console.error('Error fetching book by slug', e);
+            const message =
+      e instanceof Error ? e.message : "An unknown error occurred";
+    const status =
+      e instanceof SyntaxError
+        ? 400
+        : /unauthori[sz]ed/i.test(message)
+          ? 401
+          : 500;
         return {
             success: false,
             data: null,
