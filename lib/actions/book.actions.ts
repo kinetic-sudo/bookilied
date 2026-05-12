@@ -112,3 +112,43 @@ export const saveBookSegments = async (bookId: string, segments: TextSegment[], 
         }
     }
 }
+
+export const getBookBySlug = async (slug: string) => {
+    try {
+        await connectToDatabase();
+        const book = await Book.findOne({ slug }).lean();
+ 
+        if (!book) {
+            return { success: false, data: null };
+        }
+ 
+        return {
+            success: true,
+            data: serializeData(book) as {
+                _id: string;
+                title: string;
+                author: string;
+                coverURL: string;
+                persona: string;
+                slug: string;
+                fileURL: string;
+                totalSegments: number;
+            }
+        };
+    } catch (e) {
+            const message =
+      e instanceof Error ? e.message : "An unknown error occurred";
+    const status =
+      e instanceof SyntaxError
+        ? 400
+        : /unauthori[sz]ed/i.test(message)
+          ? 401
+          : 500;
+        return {
+            success: false,
+            data: null,
+            error: e instanceof Error ? e.message : 'Unknown error'
+        };
+    }
+};
+ 
