@@ -58,6 +58,7 @@ const VapiControls = ({ book }: { book: IBook }) => {
             <button
               type="button"
               onClick={isActive ? stop : start}
+              disabled={status === 'connecting'}
               className={`vapi-mic-btn ${
                 isActive ? 'vapi-mic-btn-active' : 'vapi-mic-btn-inactive'
               }`}
