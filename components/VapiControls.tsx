@@ -1,6 +1,6 @@
 'use client'
 import React from 'react'
-import { MicOff } from 'lucide-react'
+import { Mic, MicOff } from 'lucide-react'
 import Image from 'next/image'
 import useVapi from '@/hooks/useVapi'
 import { IBook } from '@/types'
@@ -64,7 +64,11 @@ const VapiControls = ({ book }: { book: IBook }) => {
               }`}
               aria-label={isActive ? 'Stop conversation' : 'Start conversation'}
             >
-              <MicOff className="w-6 h-6 text-[var(--text-primary)]" />
+                {isActive ? (
+                    <Mic className='size-7 text-white' />
+                ): (
+                    <MicOff className='size-7 text-[#212a3b]' />
+                )}
             </button>
           </div>
         </div>
