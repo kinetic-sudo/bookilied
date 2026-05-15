@@ -22,7 +22,7 @@ export const useVapi = (book: IBook) => {
     const [currentMessage, setCurrentMessage] = useState('')
     const [currentUserMessage, setCurrentUserMessage] = useState('')
     const [duration, setDuration] = useState(0)
-    const [limitError, setLimitError] = useState<null>(null)
+    const [limitError, setLimitError] = useState<string | null>(null)
 
     const timerRef = useRef<NodeJS.Timeout | null>(null)
     const startTimerRef = useRef<NodeJS.Timeout | null>(null)
@@ -42,7 +42,10 @@ export const useVapi = (book: IBook) => {
     // const remainingSeconds
     // const showTimeWarning
 
-    const start = async () => {}
+    const start = async () => {
+        if(!userId) return setLimitError('Please login to start a conversation');
+        setLimitError(null)
+    }
     const stop = async () => {}
     const clearError = async () => {}
 
