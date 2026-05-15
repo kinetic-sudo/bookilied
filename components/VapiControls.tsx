@@ -6,7 +6,10 @@ import useVapi from '@/hooks/useVapi'
 import { IBook } from '@/types'
 import Transcript from '@/components/Transcript'
 
-const VapiControls = ({ book }: { book: IBook }) => {
+type BookProps = Pick<IBook, '_id' | 'title' | 'author' | 'coverURL' | 'persona' | 'slug' | 'fileURL' | 'totalSegments'>
+
+
+const VapiControls = ({ book }: { book: BookProps }) => {
   const {
     status,
     isActive,
