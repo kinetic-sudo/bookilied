@@ -35,65 +35,7 @@ export default async function BookPage({ params }: BookPageProps) {
 
       <div className="max-w-4xl mx-auto flex flex-col gap-5">
         {/* Header Card */}
-        <div className="vapi-header-card">
-          {/* Book cover + mic button */}
-          <div className="vapi-cover-wrapper">
-            <Image
-              src={book.coverURL}
-              alt={`Cover of ${book.title}`}
-              width={120}
-              height={180}
-              className="vapi-cover-image !w-[120px] !h-[180px]"
-              priority
-            />
-            {/* Mic button overlapping cover bottom-right */}
-            <div className="vapi-mic-wrapper">
-              <button
-                type="button"
-                className="vapi-mic-btn vapi-mic-btn-inactive"
-                aria-label="Start conversation"
-                disabled
-                aria-disabled="true"
-              >
-                <MicOff className="w-6 h-6 text-[var(--text-primary)]" />
-              </button>
-            </div>
-          </div>
-
-          {/* Book info + badges */}
-          <div className="flex flex-col gap-3 flex-1 min-w-0">
-            <div>
-              <h1
-                className="book-title-lg !text-2xl sm:!text-[30px] leading-tight mb-1"
-                style={{ fontFamily: "'IBM Plex Serif', serif" }}
-              >
-                {book.title}
-              </h1>
-              <p className="text-base text-[var(--text-secondary)] font-medium">
-                by {book.author}
-              </p>
-            </div>
-
-            {/* Pill badges row */}
-            <div className="flex flex-wrap gap-2">
-              {/* Status badge */}
-              <div className="vapi-status-indicator">
-                <span className="vapi-status-dot vapi-status-dot-ready" />
-                <span className="vapi-status-text">Ready</span>
-              </div>
-
-              {/* Voice badge */}
-              <div className="vapi-badge-ai border border-[var(--border-subtle)]">
-  <span className="vapi-badge-ai-text capitalize">Voice: {book.persona}</span>
-</div>
-
-              {/* Timer badge */}
-              <div className="vapi-badge-ai border border-[var(--border-subtle)]">
-  <span className="vapi-badge-ai-text">0:00 / 15:00</span>
-</div>
-            </div>
-          </div>
-        </div>
+      
 
         {/* Transcript area */}
         <VapiControls book={book}/>
