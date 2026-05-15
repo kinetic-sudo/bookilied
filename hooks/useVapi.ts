@@ -1,8 +1,9 @@
 import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
+import { DEFAULT_VOICE } from "@/lib/constant";
 
-export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking'
+export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
 const useLatestRef = <T>(value: T) => {
     const ref = useRef(value)
@@ -28,5 +29,27 @@ export const useVapi = (book: IBook) => {
     const sessionIdRef = useRef<string | null>(null)
     const isStoppingRef = useRef<boolean>(false)
 
+    const bookRef = useLatestRef(book);
+    const durationRef = useLatestRef(duration)
+    const voice = book.persona || DEFAULT_VOICE
+    // const maxDuration = useLatestRef(limits.maxSessionMinutes * 60)
 
+    const isActive = status === 'listening' || status === 'thinking' || status === 'speaking' || 'starting'
+    
+    //limits
+    // const maxDurationRef = useLatestRef(limits.maxSessionMinutes * 60) 
+    // const maxDurationSeconds
+    // const remainingSeconds
+    // const showTimeWarning
+
+    const start = async () => {}
+    const stop = async () => {}
+    const clearError = async () => {}
+
+    return {
+        status, isActive, messages, currentMessage, currentUserMessage, duration, start, stop, clearError,
+        // maxDurationSeconds, remainingSeconds, showTimeWarning
+    }
 }
+
+export default useVapi

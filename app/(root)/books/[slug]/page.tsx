@@ -4,6 +4,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ArrowLeft, MicOff, Mic } from 'lucide-react';
 import { getBookBySlug } from '@/lib/actions/book.actions';
+import VapiControls from '@/components/VapiControls';
 
 interface BookPageProps {
   params: Promise<{ slug: string }>;
@@ -13,7 +14,7 @@ export default async function BookPage({ params }: BookPageProps) {
   const { userId } = await auth();
 
   if (!userId) {
-    redirect('/sign-in');
+    redirect('/')  ;
   }
 
   const { slug } = await params;
@@ -95,18 +96,7 @@ export default async function BookPage({ params }: BookPageProps) {
         </div>
 
         {/* Transcript area */}
-        <div className="transcript-container vapi-transcript-wrapper">
-          <div className="transcript-empty">
-            <Mic
-              className="w-12 h-12 text-[var(--text-secondary)] mb-4 opacity-40"
-              strokeWidth={1.25}
-            />
-            <p className="transcript-empty-text">No conversation yet</p>
-            <p className="transcript-empty-hint">
-              Click the mic button above to start talking
-            </p>
-          </div>
-        </div>
+        <VapiControls book={book}/>
       </div>
     </main>
   );
