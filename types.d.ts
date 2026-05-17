@@ -128,3 +128,5 @@ export type StartSessionResult =
   | { success: true; sessionId: string }
   | { success: false; error: string }
 
+export type EndSessionResult = 
+{success: boolean; error?: string}
