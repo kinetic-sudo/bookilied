@@ -12,7 +12,8 @@ export const startVoicesession = async (clerkId, bookId) : Promise<StartSessionR
         //limit/plan  to see whether a session is allowed 
         const ssession = await VoiceSession.create({ clerkId, bookId, 
             startedAt: new Date(), 
-            billingPeriodStart: getCurrentBillingPeriodStart()
+            billingPeriodStart: getCurrentBillingPeriodStart(),
+            durationSeconds: 0,
         });
     } catch (e) {
         console.error('error starting voice session', e)
