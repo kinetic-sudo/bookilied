@@ -38,10 +38,12 @@ export const endVoiceSession = async (
     try {
       await connectToDatabase();
   
-      await VoiceSession.findByIdAndUpdate(sessionId, {
+     const result =  await VoiceSession.findByIdAndUpdate(sessionId, {
         endedAt: new Date(),
         durationSeconds,
       });
+
+      if(!result) return {success: false, error: 'Voice session not found'}
   
       return { success: true };
     } catch (e) {
