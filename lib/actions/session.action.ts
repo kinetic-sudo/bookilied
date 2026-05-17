@@ -3,7 +3,7 @@
 import VoiceSession from "@/database/models/voiceSessions.models";
 import { connectToDatabase } from "@/database/mongoose"
 import { getCurrentBillingPeriodStart } from "../subscription-constants";
-import { StartSessionResult } from "@/types";
+import { EndSessionResult, StartSessionResult } from "@/types";
 
 
 export const startVoicesession = async (clerkId: string, bookId: string) : Promise<StartSessionResult> => {
@@ -11,7 +11,9 @@ export const startVoicesession = async (clerkId: string, bookId: string) : Promi
         await connectToDatabase();
 
         //limit/plan  to see whether a session is allowed 
-        const session = await VoiceSession.create({ clerkId, bookId, 
+        const session = await VoiceSession.create({
+            clerkId, 
+            bookId, 
             startedAt: new Date(), 
             billingPeriodStart: getCurrentBillingPeriodStart(),
             durationSeconds: 0,
@@ -28,3 +30,24 @@ export const startVoicesession = async (clerkId: string, bookId: string) : Promi
     }
 
 }
+
+export const endVoiceSession = async (
+    sessionId: string,
+    durationSeconds: number
+  ): Promise<EndSessionResult> => {
+    try {
+      await connectToDatabase();
+  
+     const result =  await VoiceSession.findByIdAndUpdate(sessionId, {
+        endedAt: new Date(),
+        durationSeconds,
+      });
+
+      if(!result) return {success: false, error: 'Voice session not found'}
+  
+      return { success: true };
+    } catch (e) {
+      console.error('error ending voice session', e);
+      return { success: false, error: 'Failed to end session' };
+    }
+  };
