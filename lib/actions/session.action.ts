@@ -10,11 +10,17 @@ export const startVoicesession = async (clerkId, bookId) : Promise<StartSessionR
         await connectToDatabase();
 
         //limit/plan  to see whether a session is allowed 
-        const ssession = await VoiceSession.create({ clerkId, bookId, 
+        const session = await VoiceSession.create({ clerkId, bookId, 
             startedAt: new Date(), 
             billingPeriodStart: getCurrentBillingPeriodStart(),
             durationSeconds: 0,
         });
+
+        return {
+            success: true,
+            sessionId: session._id.toString()
+            // maxDurationMinutes: check.maxDurationMinutes,
+        }
     } catch (e) {
         console.error('error starting voice session', e)
         return {success: false, error: 'Failed to start session. Please try again later'}
