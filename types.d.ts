@@ -82,6 +82,12 @@ export interface BookCardProps {
     slug: string;
 }
 
+export interface TranscriptProps {
+    messages: Messages[]
+    currentMessage?: string       // streaming AI text
+    currentUserMessage?: string   // streaming user text
+  }
+
 export interface Messages {
     role: string;
     content: string;
@@ -117,4 +123,5 @@ export interface FileUploadFieldProps<T extends FieldValues> {
     placeholder: string;
     hint: string;
 }
+
 

@@ -1,13 +1,9 @@
 'use client'
 import React, { useEffect, useRef } from 'react'
 import { Mic } from 'lucide-react'
-import { Messages } from '@/types'
+import { Messages, TranscriptProps } from '@/types'
 
-interface TranscriptProps {
-  messages: Messages[]
-  currentMessage?: string       // streaming AI text
-  currentUserMessage?: string   // streaming user text
-}
+
 
 const Transcript = ({ messages, currentMessage, currentUserMessage }: TranscriptProps) => {
   const bottomRef = useRef<HTMLDivElement>(null)
