@@ -52,6 +52,7 @@ const VapiControls = ({ book }: { book: BookProps }) => {
             className="vapi-cover-image !w-[120px] !h-[180px]"
             priority
           />
+         
 
           {/* Mic toggle button */}
           <div className="vapi-mic-wrapper">
@@ -62,13 +63,13 @@ const VapiControls = ({ book }: { book: BookProps }) => {
               type="button"
               onClick={isActive ? stop : start}
               disabled={status === 'connecting'}
-              className={`vapi-mic-btn ${
+              className={`vapi-mic-btn shadow-md !w-[60px] !h-[60px] z-10 ${
                 isActive ? 'vapi-mic-btn-active' : 'vapi-mic-btn-inactive'
               }`}
-              aria-label={isActive ? 'Stop conversation' : 'Start conversation'}
+              // aria-label={isActive ? 'Stop conversation' : 'Start conversation'}
             >
                 {isActive ? (
-                    <Mic className='size-7 text-white' />
+                    <Mic className='size-7 text-black' />
                 ): (
                     <MicOff className='size-7 text-[#212a3b]' />
                 )}
