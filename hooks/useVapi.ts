@@ -2,6 +2,8 @@ import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { DEFAULT_VOICE } from "@/lib/constant";
+import { startVoicesession } from "@/lib/actions/session.action";
+import { boolean } from "zod";
 
 export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
@@ -48,7 +50,17 @@ export const useVapi = (book: IBook) => {
         setStatus('connecting')
 
         try {
-            
+            const result = await startVoicesession(userId, book._id)
+
+            if(!result.success) {
+                setLimitError(result.error || 'session limit error. Please upgrade your plan')
+                setStatus('idle')
+                return;
+            }
+
+            sessionIdRef.current = result.sessionId | null;
+
+            const firstMessage = `hey, good to meet you. Quick question, before we dive in: have you actually read ${book.title} yet? Or are we starting fresh`
 
         } catch (e) {
             console.error('Error starting call')
