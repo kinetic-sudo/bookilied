@@ -21,8 +21,13 @@ let vapi: InstanceType<typeof Vapi>
 
 function getVapi() {
     if(!vapi) {
-        if(!VAPI_API_KEY)
+        if(!VAPI_API_KEY) {
+            throw new Error('NEXT_PUBLIC_VAPI_API_KEY, not found. Please set it in the .env file.')
+        }
+        vapi = new Vapi(VAPI_API_KEY)
     }
+
+    return vapi;
 } 
 
 export const useVapi = (book: IBook) => {
