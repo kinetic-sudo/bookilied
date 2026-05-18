@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { DEFAULT_VOICE } from "@/lib/constant";
+import { startVoicesession } from "@/lib/actions/session.action";
 
 export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
@@ -48,6 +49,15 @@ export const useVapi = (book: IBook) => {
         setStatus('connecting')
 
         try {
+            const result = await startVoicesession(userId, book._id)
+
+            if(!result.success) {
+                setLimitError(result.error || 'session limit error. Please upgrade your plan')
+                setStatus('idle')
+                return;
+            }
+
+            sessionIdRef.current = result.sessionId | null;
             
 
         } catch (e) {
