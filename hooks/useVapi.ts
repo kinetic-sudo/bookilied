@@ -3,7 +3,7 @@ import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { DEFAULT_VOICE } from "@/lib/constant";
 import { startVoicesession } from "@/lib/actions/session.action";
-import { boolean } from "zod";
+import Vapi from '@vapi-ai/web'
 
 export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
@@ -14,6 +14,21 @@ const useLatestRef = <T>(value: T) => {
     });
     return ref
 }
+
+const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY
+
+let vapi: InstanceType<typeof Vapi>
+
+function getVapi() {
+    if(!vapi) {
+        if(!VAPI_API_KEY) {
+            throw new Error('NEXT_PUBLIC_VAPI_API_KEY, not found. Please set it in the .env file.')
+        }
+        vapi = new Vapi(VAPI_API_KEY)
+    }
+
+    return vapi;
+} 
 
 export const useVapi = (book: IBook) => {
     const { userId } = useAuth()
@@ -56,9 +71,12 @@ export const useVapi = (book: IBook) => {
                 setLimitError(result.error || 'session limit error. Please upgrade your plan')
                 setStatus('idle')
                 return;
+
+                
             }
 
-            sessionIdRef.current = result.sessionId | null;
+            sessionIdRef.current = result.sessionId || null;
+
 
             const firstMessage = `hey, good to meet you. Quick question, before we dive in: have you actually read ${book.title} yet? Or are we starting fresh`
 
