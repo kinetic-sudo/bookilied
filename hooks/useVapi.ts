@@ -3,7 +3,7 @@ import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { DEFAULT_VOICE } from "@/lib/constant";
 import { startVoicesession } from "@/lib/actions/session.action";
-import { boolean } from "zod";
+import Vapi from '@vapi-ai/web'
 
 export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
@@ -14,6 +14,16 @@ const useLatestRef = <T>(value: T) => {
     });
     return ref
 }
+
+const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY
+
+let vapi: InstanceType<typeof Vapi>
+
+function getVapi() {
+    if(!vapi) {
+        if(!VAPI_API_KEY)
+    }
+} 
 
 export const useVapi = (book: IBook) => {
     const { userId } = useAuth()
