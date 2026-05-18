@@ -71,9 +71,12 @@ export const useVapi = (book: IBook) => {
                 setLimitError(result.error || 'session limit error. Please upgrade your plan')
                 setStatus('idle')
                 return;
+
+                
             }
 
-            sessionIdRef.current = result.sessionId | null;
+            sessionIdRef.current = result.sessionId || null;
+
 
             const firstMessage = `hey, good to meet you. Quick question, before we dive in: have you actually read ${book.title} yet? Or are we starting fresh`
 
