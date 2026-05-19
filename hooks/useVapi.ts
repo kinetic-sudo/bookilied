@@ -83,15 +83,16 @@ export const useVapi = (book: IBook) => {
                 firstMessage,
                 variableValues: {
                     title:book.title, author:book.author, bookId:book._id
-                }, voice: {
-                    provider: '11labs',
-                    voiceId: getVoice(voice).id, 
-                    model: 'eleven_turbo_v2_5' as const, 
-                    stability: VOICE_SETTINGS.stability,
-                    similarityBoost: VOICE_SETTINGS.similarityBoost,
-                    style: VOICE_SETTINGS.style,
-                    useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost
-                }
+                }, 
+                // voice: {
+                //     provider: '11labs',
+                //     voiceId: getVoice(voice).id, 
+                //     model: 'eleven_turbo_v2_5' as const, 
+                //     stability: VOICE_SETTINGS.stability,
+                //     similarityBoost: VOICE_SETTINGS.similarityBoost,
+                //     style: VOICE_SETTINGS.style,
+                //     useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost
+                // }
             })
 
         } catch (e) {
@@ -100,7 +101,11 @@ export const useVapi = (book: IBook) => {
             setLimitError('An error occured while starting the call');
         }
     }
-    const stop = async () => {}
+    const stop = async () => {
+        isStoppingRef.current =  true
+        await getVapi().stop
+        isStoppingRef.current = false
+    }
     const clearError = async () => {}
 
     return {
