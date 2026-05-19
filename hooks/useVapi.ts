@@ -52,7 +52,7 @@ export const useVapi = (book: IBook) => {
     const voice = book.persona || DEFAULT_VOICE
     // const maxDuration = useLatestRef(limits.maxSessionMinutes * 60)
 
-    const isActive = status === 'listening' || status === 'thinking' || status === 'speaking' || 'starting'
+    const isActive = status === 'listening' || status === 'thinking' || status === 'speaking' || status === 'starting'
     
     //limits
     // const maxDurationRef = useLatestRef(limits.maxSessionMinutes * 60) 
@@ -103,7 +103,7 @@ export const useVapi = (book: IBook) => {
     }
     const stop = async () => {
         isStoppingRef.current =  true
-        await getVapi().stop
+        await getVapi().stop()
         isStoppingRef.current = false
     }
     const clearError = async () => {}
