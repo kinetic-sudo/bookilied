@@ -89,7 +89,7 @@ export const useVapi = (book: IBook) => {
                     model: 'eleven_turbo_v2_5' as const, 
                     stability: VOICE_SETTINGS.stability,
                     similarityBoost: VOICE_SETTINGS.similarityBoost,
-
+                    style: VOICE_SETTINGS.style,
                 }
             })
 
