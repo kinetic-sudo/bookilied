@@ -20,6 +20,8 @@ const VAPI_API_KEY = process.env.NEXT_PUBLIC_VAPI_API_KEY
 
 let vapi: InstanceType<typeof Vapi>
 
+
+
 function getVapi() {
     if(!vapi) {
         if(!VAPI_API_KEY) {
@@ -84,15 +86,15 @@ export const useVapi = (book: IBook) => {
                 variableValues: {
                     title:book.title, author:book.author, bookId:book._id
                 }, 
-                // voice: {
-                //     provider: '11labs',
-                //     voiceId: getVoice(voice).id, 
-                //     model: 'eleven_turbo_v2_5' as const, 
-                //     stability: VOICE_SETTINGS.stability,
-                //     similarityBoost: VOICE_SETTINGS.similarityBoost,
-                //     style: VOICE_SETTINGS.style,
-                //     useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost
-                // }
+                voice: {
+                    provider: '11labs',
+                    voiceId: getVoice(voice).id, 
+                    model: 'eleven_turbo_v2_5' as const, 
+                    stability: VOICE_SETTINGS.stability,
+                    similarityBoost: VOICE_SETTINGS.similarityBoost,
+                    style: VOICE_SETTINGS.style,
+                    useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost
+                }
             })
 
         } catch (e) {
