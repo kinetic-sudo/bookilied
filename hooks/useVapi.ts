@@ -90,6 +90,7 @@ export const useVapi = (book: IBook) => {
                     stability: VOICE_SETTINGS.stability,
                     similarityBoost: VOICE_SETTINGS.similarityBoost,
                     style: VOICE_SETTINGS.style,
+                    useSpeakerBoost: VOICE_SETTINGS.useSpeakerBoost
                 }
             })
 
