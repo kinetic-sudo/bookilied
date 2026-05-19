@@ -1,9 +1,10 @@
 import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
-import { DEFAULT_VOICE } from "@/lib/constant";
+import { ASSISTANT_ID, DEFAULT_VOICE, VOICE_SETTINGS } from "@/lib/constant";
 import { startVoicesession } from "@/lib/actions/session.action";
 import Vapi from '@vapi-ai/web'
+import { getVoice } from "@/lib/utils";
 
 export type CallStatus = 'idle' | 'connecting' | 'starting' | 'thinking' | 'speaking' | 'listening'
 
@@ -71,14 +72,25 @@ export const useVapi = (book: IBook) => {
                 setLimitError(result.error || 'session limit error. Please upgrade your plan')
                 setStatus('idle')
                 return;
-
-                
             }
 
             sessionIdRef.current = result.sessionId || null;
 
 
             const firstMessage = `hey, good to meet you. Quick question, before we dive in: have you actually read ${book.title} yet? Or are we starting fresh`
+
+            await getVapi().start(ASSISTANT_ID,{
+                firstMessage,
+                variableValues: {
+                    title:book.title, author:book.author, bookId:book._id
+                }, voice: {
+                    provider: '11labs',
+                    voiceId: getVoice(voice).id, 
+                    model: 'eleven_turbo_v2_5' as const, 
+                    stability: VOICE_SETTINGS.stability,
+                    
+                }
+            })
 
         } catch (e) {
             console.error('Error starting call')
