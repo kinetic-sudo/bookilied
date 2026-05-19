@@ -103,7 +103,7 @@ export const useVapi = (book: IBook) => {
     }
     const stop = async () => {
         isStoppingRef.current =  true
-        await getVapi().stop
+        await getVapi().stop()
         isStoppingRef.current = false
     }
     const clearError = async () => {}
