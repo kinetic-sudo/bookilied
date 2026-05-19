@@ -88,7 +88,8 @@ export const useVapi = (book: IBook) => {
                     voiceId: getVoice(voice).id, 
                     model: 'eleven_turbo_v2_5' as const, 
                     stability: VOICE_SETTINGS.stability,
-                    
+                    similarityBoost: VOICE_SETTINGS.similarityBoost,
+
                 }
             })
 
