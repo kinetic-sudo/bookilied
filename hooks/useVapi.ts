@@ -35,8 +35,8 @@ export const useVapi = (book: IBook) => {
 
     const [status, setStatus] = useState<CallStatus>('idle')
     const [messages, setMessages] = useState<Messages[]>([])
-    const [currentMessage, setCurrentMessage] = useState('')
-    const [currentUserMessage, setCurrentUserMessage] = useState('')
+    const [currentMessage, setCurrentMessage] = useState('')        // streaming assistant text
+    const [currentUserMessage, setCurrentUserMessage] = useState('') // streaming user text
     const [duration, setDuration] = useState(0)
     const [limitError, setLimitError] = useState<string | null>(null)
 
@@ -44,20 +44,29 @@ export const useVapi = (book: IBook) => {
     const sessionIdRef = useRef<string | null>(null)
     const isStoppingRef = useRef<boolean>(false)
 
-    const bookRef = useLatestRef(book);
+    // Track last committed content per role to deduplicate finals
+    const lastCommittedRef = useRef<{ user: string; assistant: string }>({
+        user: '',
+        assistant: '',
+    })
+
+    const bookRef = useLatestRef(book)
     const durationRef = useLatestRef(duration)
     const voice = book.persona || DEFAULT_VOICE
 
-    const isActive = status === 'listening' || status === 'thinking' || status === 'speaking' || status === 'starting'
+    const isActive =
+        status === 'listening' ||
+        status === 'thinking'  ||
+        status === 'speaking'  ||
+        status === 'starting'
 
     // ── Vapi event listeners ──────────────────────────────────────────────────
     useEffect(() => {
         const v = getVapi()
 
-        // Call lifecycle
+        // ── Call lifecycle ──
         v.on('call-start', () => {
             setStatus('listening')
-            // Start duration timer
             timerRef.current = setInterval(() => {
                 setDuration(prev => prev + 1)
             }, 1000)
@@ -67,41 +76,71 @@ export const useVapi = (book: IBook) => {
             setStatus('idle')
             setCurrentMessage('')
             setCurrentUserMessage('')
-            // Stop duration timer
+            lastCommittedRef.current = { user: '', assistant: '' }
             if (timerRef.current) {
                 clearInterval(timerRef.current)
                 timerRef.current = null
             }
         })
 
-        // Speech state — who is talking
-        v.on('speech-start', () => {
-            setStatus('speaking') // AI is speaking
-        })
+        // ── Speech state ──
+        v.on('speech-start', () => setStatus('speaking'))
+        v.on('speech-end',   () => setStatus('listening'))
 
-        v.on('speech-end', () => {
-            setStatus('listening') // waiting for user
-        })
-
-        // Transcripts — partial (streaming) and final (committed)
+        // ── Message / transcript events ──
         v.on('message', (msg: any) => {
             if (msg.type !== 'transcript') return
 
-            const isAssistant = msg.role === 'assistant'
+            const { role, transcriptType, transcript } = msg
 
-            if (msg.transcriptType === 'partial') {
-                // Stream the text live into the current bubble
-                if (isAssistant) setCurrentMessage(msg.transcript)
-                else setCurrentUserMessage(msg.transcript)
-            } else if (msg.transcriptType === 'final') {
-                // Commit to the messages list and clear the streaming bubble
-                setMessages(prev => [...prev, { role: msg.role, content: msg.transcript }])
-                if (isAssistant) setCurrentMessage('')
-                else setCurrentUserMessage('')
+            // 1. User partial — update live streaming bubble
+            if (role === 'user' && transcriptType === 'partial') {
+                setCurrentUserMessage(transcript)
+                return
+            }
+
+            // 2. User final — commit to messages, clear bubble, set thinking
+            if (role === 'user' && transcriptType === 'final') {
+                const content = transcript.trim()
+                setCurrentUserMessage('')
+                setStatus('thinking')
+
+                if (!content || content === lastCommittedRef.current.user) return
+                lastCommittedRef.current.user = content
+
+                setMessages(prev => {
+                    const last = prev.findLast(m => m.role === 'user')
+                    if (last?.content === content) return prev
+                    return [...prev, { role: 'user', content }]
+                })
+                return
+            }
+
+            // 3. Assistant partial — update live streaming bubble, mark as speaking
+            if (role === 'assistant' && transcriptType === 'partial') {
+                setCurrentMessage(transcript)
+                setStatus('speaking')
+                return
+            }
+
+            // 4. Assistant final — commit to messages, clear bubble, back to listening
+            if (role === 'assistant' && transcriptType === 'final') {
+                const content = transcript.trim()
+                setCurrentMessage('')
+                setStatus('listening')
+
+                if (!content || content === lastCommittedRef.current.assistant) return
+                lastCommittedRef.current.assistant = content
+
+                setMessages(prev => {
+                    const last = prev.findLast(m => m.role === 'assistant')
+                    if (last?.content === content) return prev
+                    return [...prev, { role: 'assistant', content }]
+                })
             }
         })
 
-        // Error handling
+        // ── Error handling ──
         v.on('error', (e: any) => {
             console.error('Vapi error', e)
             setStatus('idle')
@@ -121,10 +160,14 @@ export const useVapi = (book: IBook) => {
     // ── Actions ───────────────────────────────────────────────────────────────
     const start = async () => {
         if (!userId) return setLimitError('Please login to start a conversation')
+
         setLimitError(null)
         setStatus('connecting')
         setDuration(0)
         setMessages([])
+        setCurrentMessage('')
+        setCurrentUserMessage('')
+        lastCommittedRef.current = { user: '', assistant: '' }
 
         try {
             const result = await startVoicesession(userId, book._id)
