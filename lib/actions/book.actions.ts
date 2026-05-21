@@ -151,4 +151,29 @@ export const getBookBySlug = async (slug: string) => {
         };
     }
 };
+
+export const searchBookSegments = async (bookId: string, query: string, limit: number = 3) => {
+    try {
+        await connectToDatabase()
+
+        const segments = await BookSegment.find({
+            bookId: new Types.ObjectId(bookId),
+            content: { $regex: query, $options: 'i' }
+        })
+        .sort({ segmentIndex: 1 })
+        .limit(limit)
+        .lean()
+
+        return {
+            success: true,
+            data: serializeData(segments) as { content: string }[]
+        }
+    } catch (e) {
+        console.error('Error searching book segments', e)
+        return {
+            success: false,
+            error: e instanceof Error ? e.message : 'Unknown error'
+        }
+    }
+}
  
