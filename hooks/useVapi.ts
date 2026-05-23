@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { ASSISTANT_ID, DEFAULT_VOICE, VOICE_SETTINGS } from "@/lib/constant";
-import { startVoicesession } from "@/lib/actions/session.action";
+import { endVoiceSession, startVoicesession } from "@/lib/actions/session.action";
 import Vapi from '@vapi-ai/web'
 import { getVoice } from "@/lib/utils";
 
@@ -200,10 +200,17 @@ export const useVapi = (book: IBook) => {
                 },
             })
 
-        } catch (e) {
-            console.error('Error starting call', e)
-            setStatus('idle')
-            setLimitError('An error occurred while starting the call.')
+        } catch (err) {
+            console.error('Error starting call', err)
+            if(sessionIdRef.current) {
+                endVoiceSession(sessionIdRef.current, 0).catch((endErr) => 
+                    console.log('Failed to rollback voice session after start failure', err)
+                
+            )
+                sessionIdRef.current = null;
+            }
+                setStatus('idle')
+                setLimitError('An error occurred while starting the call.')
         }
     }
 
