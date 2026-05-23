@@ -50,9 +50,10 @@ export async function POST(req: NextRequest) {
                 }
  
                 // Combine segment contents into a single string
-                const combined = searchResult.data
-                    .map((segment: { content: string }) => segment.content)
-                    .join('\n\n')
+                const combined = (searchResult.data as { content: string }[])
+                .map(segment => segment.content)
+                .join('\n\n')
+            
  
                 return {
                     toolCallId: id,
