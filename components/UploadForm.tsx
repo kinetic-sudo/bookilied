@@ -20,7 +20,7 @@ import type { BookUploadFormInputValues, BookUploadFormValues } from '@/types';
 import { UploadSchema, type UploadVoiceId } from '@/lib/zod';
 import { cn, parsePDFFile } from '@/lib/utils';
 import { toast } from 'sonner'
-import { checkBookExist, createBook, saveBookSegments } from '@/lib/actions/book.actions';
+import { checkBookExists, createBook, saveBookSegments } from '@/lib/actions/book.actions';
 import { useRouter } from 'next/navigation';
 import { upload } from '@vercel/blob/client';
 
@@ -110,8 +110,8 @@ const UploadForm = () => {
     //posthog to track the book upload
 
     try {
-      const existCheck = await checkBookExist(data.title)
-      if(existCheck.exist && existCheck.book) {
+      const existCheck = await checkBookExists(data.title)
+      if(existCheck.exists && existCheck.book) {
          toast.info('Book with same title already exist. Please try again with different title')
          form.reset()
          router.push(`/books/${existCheck.book.slug}`)
@@ -179,7 +179,7 @@ const UploadForm = () => {
           return;
        }
 
-       const segments = await saveBookSegments(book.data._id, parsedPDF.content,  userId,)
+       const segments = await saveBookSegments(book.data._id, userId, parsedPDF.content,)
 
        if(!segments.success) {
         toast.error('Failed to save a book segments')
