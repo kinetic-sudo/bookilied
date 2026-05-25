@@ -110,8 +110,8 @@ const UploadForm = () => {
     //posthog to track the book upload
 
     try {
-      const existCheck = await (data.title)
-      if(existCheck.exist && existCheck.book) {
+      const existCheck = await checkBookExists(data.title)
+      if(existCheck.exists && existCheck.book) {
          toast.info('Book with same title already exist. Please try again with different title')
          form.reset()
          router.push(`/books/${existCheck.book.slug}`)
