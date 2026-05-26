@@ -125,7 +125,7 @@ export interface FileUploadFieldProps<T extends FieldValues> {
 }
 
 export type StartSessionResult =
-  | { success: boolean; sessionId: string }
+  | { success: true; sessionId: string }
   | { success: false; error: string }
 
 export type EndSessionResult = 
