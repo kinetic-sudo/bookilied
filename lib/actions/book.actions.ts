@@ -7,6 +7,9 @@ import Book from "@/database/models/books.models";
 import BookSegment from "@/database/models/bookSegments.models";
 import mongoose from "mongoose";
 import {getUserPlan} from "@/lib/subscriptioServer";
+import { revalidatePath } from "next/cache";
+
+revalidatePath('/')
 
 export const getAllBooks = async (search?: string) => {
     try {
