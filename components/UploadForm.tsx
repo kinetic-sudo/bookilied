@@ -169,9 +169,10 @@ const UploadForm = () => {
       });
 
       if(!book.success) {
-        console.error('createBook failed with:', book.error)  // add this
-        throw new Error('Failed to create book')
+        toast.error(typeof book.error === 'string' ? book.error : 'Failed to create book')
+        return
       }
+      
         if(book.alreadyExists) {
           toast.info('Book with same title already exist. Please try again with different title')
           form.reset()
