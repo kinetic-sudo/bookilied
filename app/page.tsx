@@ -3,6 +3,7 @@ import HomePageSection from '@/components/HomePageSection'
 import { getAllBooks } from '@/lib/actions/book.actions'
 import { sampleBooks } from '@/lib/constant'
 
+export const dynamic = 'force-dynamic';
 
 const Page = async () => {
   const bookResults = await getAllBooks()
