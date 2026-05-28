@@ -1,40 +1,35 @@
-export const PLANS = {
-    FREE: 'free',
-    STANDARD: 'standard',
-    PRO: 'pro',
-} as const;
-
-export type PlanType = typeof PLANS[keyof typeof PLANS];
+export type PlanSlug = 'free' | 'standard' | 'pro'
 
 export interface PlanLimits {
-    maxBooks: number;
-    maxSessionsPerMonth: number;
-    maxDurationPerSession: number; // in minutes
-    hasSessionHistory: boolean;
+    maxBooks: number
+    maxSessionsPerMonth: number   // -1 = unlimited
+    maxSessionMinutes: number
+    hasSessionHistory: boolean
 }
 
-export const PLAN_LIMITS: Record<PlanType, PlanLimits> = {
-    [PLANS.FREE]: {
+export const PLAN_LIMITS: Record<PlanSlug, PlanLimits> = {
+    free: {
         maxBooks: 1,
         maxSessionsPerMonth: 5,
-        maxDurationPerSession: 5,
+        maxSessionMinutes: 5,
         hasSessionHistory: false,
     },
-    [PLANS.STANDARD]: {
+    standard: {
         maxBooks: 10,
         maxSessionsPerMonth: 100,
-        maxDurationPerSession: 15,
+        maxSessionMinutes: 15,
         hasSessionHistory: true,
     },
-    [PLANS.PRO]: {
+    pro: {
         maxBooks: 100,
-        maxSessionsPerMonth: Infinity,
-        maxDurationPerSession: 60,
+        maxSessionsPerMonth: -1,       // unlimited
+        maxSessionMinutes: 60,
         hasSessionHistory: true,
     },
-};
+}
 
+/** Returns the first day of the current calendar month as a Date */
 export const getCurrentBillingPeriodStart = (): Date => {
-    const now = new Date();
-    return new Date(now.getFullYear(), now.getMonth(), 1, 0, 0, 0, 0);
-};
+    const now = new Date()
+    return new Date(now.getFullYear(), now.getMonth(), 1)
+}
