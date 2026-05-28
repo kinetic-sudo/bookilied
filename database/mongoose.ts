@@ -32,6 +32,6 @@ if(!MONGODB_URI) {
         throw e
     }
       console.info('connected to Mongodb')
-      return cached.con
+      return cached.conn
     }
 
