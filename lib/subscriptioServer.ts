@@ -1,18 +1,18 @@
-import { auth } from '@clerk/nextjs/server'
-import { PlanSlug } from '@/lib/subscription-constants'
+import {auth} from "@clerk/nextjs/server";
+import {PLANS, PLAN_LIMITS, PlanType} from "@/lib/subscription-constants";
 
-/**
- * Returns the current user's plan slug using Clerk's has() to check
- * which Clerk Billing plan the user is subscribed to.
- *
- * Plans are configured in the Clerk Dashboard with slugs:
- *   "standard" and "pro"
- * Users without a subscription are on "free".
- */
-export const getUserPlan = async (): Promise<PlanSlug> => {
-    const { has } = await auth()
+export const getUserPlan = async (): Promise<PlanType> => {
+    const { has, userId } = await auth();
 
-    if (has({ plan: 'pro' })) return 'pro'
-    if (has({ plan: 'standard' })) return 'standard'
-    return 'free'
+    if (!userId) return PLANS.FREE;
+
+    if (has({ plan: "pro" })) return PLANS.PRO;
+    if (has({ plan: "standard" })) return PLANS.STANDARD;
+
+    return PLANS.FREE;
+}
+
+export const getPlanLimits = async () => {
+    const plan = await getUserPlan();
+    return PLAN_LIMITS[plan];
 }
