@@ -10,7 +10,7 @@ import React from 'react'
 const navItem = [
   {label: 'Library', href: '/'},
   {label: 'Add new', href: '/books/new'},
-  {label: 'Pricing', href: '/subscription'}
+  { label: 'Pricing', href: '/subscriptions' }
 ]
 
 const Navbar = () => {
