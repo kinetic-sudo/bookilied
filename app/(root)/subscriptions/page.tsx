@@ -14,7 +14,7 @@ export default async function SubscriptionsPage() {
                 <ArrowLeft className="w-5 h-5 text-[var(--text-primary)]" />
             </Link>
 
-            <div className="w-full max-w-6xl mx-auto">
+            <div className="w-full max-w-6xl mx-auto mt-[4rem]">
                 <h1 className="page-title">Choose Your Plan</h1>
                 <p className="page-description text-[var(--text-secondary)]">
                     Unlock more books, longer sessions, and conversation history.
