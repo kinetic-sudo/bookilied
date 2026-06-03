@@ -169,7 +169,7 @@ const UploadForm = () => {
       });
 
       if(!book.success) {
-        toast.error(typeof book.error === 'string' ? book.error : 'Failed to create book')
+        const msg =  typeof book.error === 'string'
         toast.error(msg)
         return
       }
