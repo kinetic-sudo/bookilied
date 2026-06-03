@@ -68,6 +68,11 @@ export interface CreateBook {
     fileSize: number;
 }
 
+// types/index.ts
+export type CreateBookResult =
+  | { success: true; data: any; alreadyExists?: boolean }
+  | { success: false; error: string; isBillingError?: boolean }
+
 export interface TextSegment {
     text: string;
     segmentIndex: number;
