@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { IBook, Messages } from "@/types";
 import { useAuth } from "@clerk/nextjs";
 import { ASSISTANT_ID, DEFAULT_VOICE, VOICE_SETTINGS } from "@/lib/constant";
-import { endVoiceSession, startVoicesession } from "@/lib/actions/session.action";
+import { endVoiceSession, startVoiceSession } from "@/lib/actions/session.action"
 import Vapi from '@vapi-ai/web'
 import { getVoice } from "@/lib/utils";
 
@@ -170,7 +170,7 @@ export const useVapi = (book: IBook) => {
         lastCommittedRef.current = { user: '', assistant: '' }
 
         try {
-            const result = await startVoicesession(userId, book._id)
+            const result = await startVoiceSession(userId, book._id)
 
             if (!result.success) {
                 setLimitError(result.error || 'Session limit reached. Please upgrade your plan.')
