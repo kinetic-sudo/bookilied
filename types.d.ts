@@ -130,8 +130,10 @@ export interface FileUploadFieldProps<T extends FieldValues> {
 }
 
 export type StartSessionResult =
-  | { success: true; sessionId: string }
-  | { success: false; error: string }
+  | { success: true; sessionId: string; maxDurationMinutes?: number }
+  | { success: false; error: string; isBillingError?: boolean }
 
 export type EndSessionResult = 
 {success: boolean; error?: string}
+
+

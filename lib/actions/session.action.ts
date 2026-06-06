@@ -23,8 +23,7 @@ export const startVoiceSession = async (clerkId: string, bookId: string): Promis
         });
 
         if (sessionCount >= limits.maxSessionsPerMonth) {
-            const { revalidatePath } = await import("next/cache");
-            revalidatePath("/");
+  
 
             return {
                 success: false,
