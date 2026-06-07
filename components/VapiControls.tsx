@@ -6,8 +6,6 @@ import useVapi from '@/hooks/useVapi'
 import { IBook } from '@/types'
 import Transcript from '@/components/Transcript'
 
-
-
 const VapiControls = ({ book }: { book: IBook }) => {
   const {
     status,
@@ -16,32 +14,46 @@ const VapiControls = ({ book }: { book: IBook }) => {
     currentMessage,
     currentUserMessage,
     duration,
+    maxDurationSeconds,
+    limitError,
     start,
     stop,
     clearError,
   } = useVapi(book)
 
-  /* ── Status dot class ── */
   const dotClass = `vapi-status-dot vapi-status-dot-${status === 'idle' ? 'ready' : status}`
 
-  /* ── Status label ── */
   const statusLabel =
     status === 'idle'
       ? 'Ready'
       : status.charAt(0).toUpperCase() + status.slice(1)
 
-  /* ── Duration formatting (mm:ss / 15:00) ── */
   const formatTime = (secs: number) => {
     const m = Math.floor(secs / 60)
     const s = secs % 60
     return `${m}:${String(s).padStart(2, '0')}`
   }
 
+  // Warn user when 1 minute remaining
+  const remaining = maxDurationSeconds - duration
+  const isNearLimit = isActive && remaining <= 60 && remaining > 0
+
   return (
     <>
+      {/* ── Limit / billing error banner ── */}
+      {limitError && (
+        <div className="warning-banner">
+          <div className="warning-banner-content">
+            <span className="warning-banner-text">{limitError}</span>
+            <button onClick={clearError} className="ml-auto text-sm underline">
+              Dismiss
+            </button>
+          </div>
+        </div>
+      )}
+
       {/* ── Header card ── */}
       <div className="vapi-header-card">
-        {/* Book cover + mic button */}
         <div className="vapi-cover-wrapper">
           <Image
             src={book.coverURL}
@@ -51,13 +63,9 @@ const VapiControls = ({ book }: { book: IBook }) => {
             className="vapi-cover-image !w-[120px] !h-[180px]"
             priority
           />
-         
 
-          {/* Mic toggle button */}
           <div className="vapi-mic-wrapper">
-            {isActive && (
-              <span className="vapi-pulse-ring" aria-hidden="true" />
-            )}
+            {isActive && <span className="vapi-pulse-ring" aria-hidden="true" />}
             <button
               type="button"
               onClick={isActive ? stop : start}
@@ -66,18 +74,15 @@ const VapiControls = ({ book }: { book: IBook }) => {
                 isActive ? 'vapi-mic-btn-active' : 'vapi-mic-btn-inactive'
               }`}
               aria-label={isActive ? 'Stop conversation' : 'Start conversation'}
-              title={isActive ? 'Stop voice assistant' : 'Start voice'}
             >
-                {isActive ? (
-                    <Mic className='size-7 text-black' />
-                ): (
-                    <MicOff className='size-7 text-[#212a3b]' />
-                )}
+              {isActive
+                ? <Mic className="size-7 text-black" />
+                : <MicOff className="size-7 text-[#212a3b]" />
+              }
             </button>
           </div>
         </div>
 
-        {/* Book info + badges */}
         <div className="flex flex-col gap-3 flex-1 min-w-0">
           <div>
             <h1
@@ -91,7 +96,6 @@ const VapiControls = ({ book }: { book: IBook }) => {
             </p>
           </div>
 
-          {/* Pill badges */}
           <div className="flex flex-wrap gap-2">
             {/* Status */}
             <div className="vapi-status-indicator">
@@ -106,10 +110,10 @@ const VapiControls = ({ book }: { book: IBook }) => {
               </span>
             </div>
 
-            {/* Timer */}
-            <div className="vapi-badge-ai border border-[var(--border-subtle)]">
-              <span className="vapi-badge-ai-text">
-                {formatTime(duration)} / 15:00
+            {/* Timer — turns red when near limit */}
+            <div className={`vapi-badge-ai border ${isNearLimit ? 'border-red-400 bg-red-50' : 'border-[var(--border-subtle)]'}`}>
+              <span className={`vapi-badge-ai-text ${isNearLimit ? 'text-red-600' : ''}`}>
+                {formatTime(duration)} / {formatTime(maxDurationSeconds)}
               </span>
             </div>
           </div>
