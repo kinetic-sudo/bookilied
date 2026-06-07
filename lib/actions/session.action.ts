@@ -10,7 +10,7 @@ export const startVoiceSession = async (clerkId: string, bookId: string): Promis
         await connectToDatabase();
 
         // Limits/Plan to see whether a session is allowed.
-        const { getUserPlan } = await import("@/lib/subscriptioServer");
+        const { getUserPlan } = await import("@/lib/subscriptionServer");
         const { PLAN_LIMITS, getCurrentBillingPeriodStart } = await import("@/lib/subscription-constants");
 
         const plan = await getUserPlan();

@@ -6,7 +6,7 @@ import {escapeRegex, generateSlug, serializeData} from "@/lib/utils";
 import Book from "@/database/models/books.models";
 import BookSegment from "@/database/models/bookSegments.models";
 import mongoose from "mongoose";
-import {getUserPlan} from "@/lib/subscriptioServer";
+import {getUserPlan} from "@/lib/subscriptionServer";
 
 export const getAllBooks = async (search?: string) => {
     try {
@@ -82,7 +82,7 @@ export const createBook = async (data: CreateBook) => {
         }
 
         // Todo: Check subscription limits before creating a book
-        const { getUserPlan } = await import("@/lib/subscriptioServer");
+        const { getUserPlan } = await import("@/lib/subscriptionServer");
         const { PLAN_LIMITS } = await import("@/lib/subscription-constants");
 
         const { auth } = await import("@clerk/nextjs/server");
